@@ -14,7 +14,10 @@ function App(){
     }
     function handleOnSubmit(e) {
         e.preventDefault();
-        if(!groceryInput.trim()) return;
+        if(!groceryInput.trim()) 
+        {
+            return;
+        }
         const newGrocery = {
             id: Date.now(),
             text: groceryInput,
@@ -23,16 +26,40 @@ function App(){
         setGroceriesItems([newGrocery, ...groceriesItems]);
         setGroceryInput('');
     }
-    // const groceries = [
-    //     { id: Date.now(), text: "Bananas", bought: false },
-    //     { id: Date.now(), text: "Pear", bought: false },
-    //     { id: Date.now(), text: "Apple", bought: false },
-    // ]
+
+    function toggleBought(id){
+        const updatedItems = groceriesItems.map((item) =>{
+            if(item.id === id){
+                console.log(`Toggling item with ${id}: currently ${item.bought ? "bought" : "not bought"}`);
+                return {...item, bought: !item.bought };
+            }
+            return item;
+        });
+        setGroceriesItems(updatedItems);
+    }
+
+    function handleRemoveItem(id) {
+        const updatedItems = groceriesItems.filter((item) => item.id !== id);
+        setGroceriesItems(updatedItems);
+        console.log(`Removed item with id: ${id}`);
+    }
+
+    const totalItems = groceriesItems.length;
+    const totalBought = groceriesItems.filter((item) => item.bought).length;
+
     return <div className="container pt-2">
         <GroceryNav />
-        <GroceryForm item={groceryInput} handleOnChange={handleOnChange} handleOnSubmit={handleOnSubmit}/>
-        <GroceryList items={groceriesItems}/>
-        <GroceryFooter/>
+        <GroceryForm 
+        item={groceryInput} 
+        handleOnChange={handleOnChange} 
+        handleOnSubmit={handleOnSubmit}
+        />
+        <GroceryList 
+        items={groceriesItems}
+        handleOnToggle={toggleBought}
+        handleRemoveItem={handleRemoveItem}/>
+        <GroceryFooter
+        totalBought={totalBought} totalItems={totalItems}/>
     </div>
 }
 
